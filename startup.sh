@@ -37,7 +37,7 @@ if [$XDG_CURRENT_DESKTOP == 'KDE'] ; then
 
     echo 'Installing Latte Dock'
     sudo add-apt-repository ppa:kubuntu-ppa/backports -y
-    sudo apt-get update && sudo apt-get dist-upgrade
+    sudo apt-get update && sudo apt-get dist-upgrade -y
     sudo apt-get install cmake extra-cmake-modules qtdeclarative5-dev libqt5x11extras5-dev libkf5iconthemes-dev libkf5plasma-dev libkf5windowsystem-dev libkf5declarative-dev libkf5xmlgui-dev libkf5activities-dev build-essential libxcb-util-dev libkf5wayland-dev git gettext libkf5archive-dev libkf5notifications-dev libxcb-util0-dev libsm-dev libkf5crash-dev libkf5newstuff-dev libxcb-shape0-dev libxcb-randr0-dev libx11-dev libx11-xcb-dev -y
     sudo git clone https://github.com/KDE/latte-dock.git /usr/local/latte-dock
     cd /usr/local/latte-dock && sudo sh install.sh
@@ -60,20 +60,6 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub
 
-echo 'Installing ZSH'
-sudo apt-get install zsh -y
-sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
-chsh -s $(which zsh)
-
-echo 'Indexing snap to ZSH'
-sudo chmod 777 /etc/zsh/zprofile
-echo "emulate sh -c 'source /etc/profile.d/apps-bin-path.sh'" >> /etc/zsh/zprofile
-
-echo 'Installing Spaceship ZSH Theme'
-git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt"
-ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
-source ~/.zshrc
-
 echo 'Installing FiraCode'
 sudo apt-get install fonts-firacode -y
 
@@ -89,8 +75,6 @@ git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
-source ~/.zshrc
-clear
 
 echo 'Installing NodeJS LTS'
 nvm --version
@@ -118,7 +102,7 @@ sudo apt-get update && sudo apt-get install code -y
 echo 'Installing Vivaldi' 
 wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -
 sudo add-apt-repository 'deb https://repo.vivaldi.com/archive/deb/ stable main' -y
-sudo apt update && sudo apt install vivaldi-stable
+sudo apt update && sudo apt install vivaldi-stable -y
 
 echo 'Launching Vivaldi on Github so you can paste your keys'
 vivaldi https://github.com/settings/keys </dev/null >/dev/null 2>&1 & disown
@@ -150,7 +134,6 @@ vercel --version
 echo 'Installing Netlify CLI'
 sudo npm install -g --unsafe-perm=true netlify-cli
 netlify --version
-
 
 echo 'Installing Insomnia Core and Omni Theme' 
 echo "deb https://dl.bintray.com/getinsomnia/Insomnia /" \
@@ -194,13 +177,13 @@ sudo -- sh -c 'apt-get update; apt-get upgrade -y; apt-get full-upgrade -y; apt-
 clear
 
 echo 'Installing postgres container'
-docker run --name database -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
+docker run --name postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
 
 echo 'Installing mongodb container'
 docker run --name mongodb -p 27017:27017 -d -t mongo
 
 echo 'Installing redis container'
-docker run --name redis_skylab -p 6379:6379 -d -t redis:alpine
+docker run --name redis -p 6379:6379 -d -t redis:alpine
 clear
 
 echo 'Bumping the max file watchers'
@@ -215,15 +198,15 @@ echo "deb https://deb.beekeeperstudio.io stable main" | sudo tee /etc/apt/source
 
 # Update apt and install
 sudo apt update
-sudo apt install beekeeper-studio
+sudo apt install beekeeper-studio -y
 
 echo 'Installing Mailspring'
-sudo snap install mailspring
+sudo snap install mailspring -y
 
 echo 'Installing Stacer'
 sudo add-apt-repository ppa:oguzhaninan/stacer
 sudo apt-get update
-sudo apt-get install stacer
+sudo apt-get install stacer -y
 
 echo 'Installing Dropbox Client'
 wget https://linux.dropbox.com/packages/ubuntu/dropbox_1.6.0_amd64.deb
@@ -231,7 +214,7 @@ sudo dpkg -i dropbox_1.6.0_amd64.deb
 
 echo 'Installing Ulauncher'
 sudo ppa:agornostal/ulauncher
-sudo apt install ./packagename.deb
+sudo apt install ./packagename.deb -y
 
 echo 'Installing Reactotron'
 wget https://github.com/infinitered/reactotron/releases/download/v3.0.0-beta.9/reactotron-app_3.0.0-beta.9_amd64.deb -O reactotron.appimage
@@ -245,6 +228,23 @@ wget -qO - https://typora.io/linux/public-key.asc | sudo apt-key add -
 sudo add-apt-repository 'deb https://typora.io/linux ./'
 sudo apt-get update
 # install typora
-sudo apt-get install typora
+sudo apt-get install typora -y
+
+echo 'Installing ZSH'
+sudo apt-get install zsh -y
+sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+chsh -s $(which zsh)
+
+echo 'Indexing snap to ZSH'
+sudo chmod 777 /etc/zsh/zprofile
+echo "emulate sh -c 'source /etc/profile.d/apps-bin-path.sh'" >> /etc/zsh/zprofile
+
+echo 'Installing Spaceship ZSH Theme'
+git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt"
+ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
+source ~/.zshrc
+
+source ~/.zshrc
+clear
 
 echo 'All setup, enjoy!'
