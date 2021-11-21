@@ -60,21 +60,11 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub
 
-echo 'Installing FiraCode'
-sudo apt-get install fonts-firacode -y
-
 echo 'Installing NVM' 
-sh -c "$(curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash)"
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 
-export NVM_DIR="$HOME/.nvm" && (
-git clone https://github.com/creationix/nvm.git "$NVM_DIR"
-cd "$NVM_DIR"
-git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
-) && \. "$NVM_DIR/nvm.sh"
-
-export NVM_DIR="$HOME/.nvm"
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-
 
 echo 'Installing NodeJS LTS'
 nvm --version
@@ -87,8 +77,8 @@ echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/source
 sudo apt-get update && sudo apt-get install --no-install-recommends yarn
 echo '"--emoji" true' >> ~/.yarnrc
 
-echo 'Installing Typescript, AdonisJS CLI and Lerna'
-yarn global add typescript @adonisjs/cli lerna
+echo 'Installing Typescript'
+yarn global add typescript
 clear
 
 echo 'Installing VSCode'
@@ -98,6 +88,7 @@ sudo sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/packages.micr
 sudo apt-get install apt-transport-https -y
 sudo apt-get update && sudo apt-get install code -y
 
+sudo apt install gnome-keyring
 
 echo 'Installing Vivaldi' 
 wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -
@@ -135,14 +126,13 @@ echo 'Installing Netlify CLI'
 sudo npm install -g --unsafe-perm=true netlify-cli
 netlify --version
 
-echo 'Installing Insomnia Core and Omni Theme' 
-echo "deb https://dl.bintray.com/getinsomnia/Insomnia /" \
-  | sudo tee -a /etc/apt/sources.list.d/insomnia.list
-wget --quiet -O - https://insomnia.rest/keys/debian-public.key.asc \
-  | sudo apt-key add -
-sudo apt-get update && sudo apt-get install insomnia -y
-mkdir ~/.config/Insomnia/plugins && cd ~/.config/Insomnia/plugins
-git clone https://github.com/Rocketseat/insomnia-omni.git omni-theme && cd ~
+echo 'Installing Insomnia Core'
+echo "deb [trusted=yes arch=amd64] https://download.konghq.com/insomnia-ubuntu/ default all" \
+    | sudo tee -a /etc/apt/sources.list.d/insomnia.list
+
+# Refresh repository sources and install Insomnia
+sudo apt-get update
+sudo apt-get install insomnia -y
 
 echo 'Installing VLC'
 sudo apt-get install vlc -y
@@ -156,13 +146,16 @@ sudo apt-get install -f -y && rm discord.deb
 echo 'Installing Spotify' 
 curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add - 
 echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-
-sudo apt-get update && sudo apt-get install spotify-client
+sudo apt-get update
+sudo apt-get install spotify-client -y
 
 echo 'Installing Peek' 
 sudo add-apt-repository ppa:peek-developers/stable -y
 sudo apt update
 sudo apt install peek -y
+
+echo 'Installing tool to handle clipboard via CLI'
+sudo apt-get install xclip -y
 
 echo 'Installing CopyQ' 
 sudo add-apt-repository ppa:hluk/copyq -y
@@ -190,21 +183,13 @@ echo 'Bumping the max file watchers'
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
 echo 'Installing Beekeeper Studio'
-# Install our GPG key
 wget --quiet -O - https://deb.beekeeperstudio.io/beekeeper.key | sudo apt-key add -
-
-# add our repo to your apt lists directory
 echo "deb https://deb.beekeeperstudio.io stable main" | sudo tee /etc/apt/sources.list.d/beekeeper-studio-app.list
-
-# Update apt and install
 sudo apt update
 sudo apt install beekeeper-studio -y
 
-echo 'Installing Mailspring'
-sudo snap install mailspring -y
-
 echo 'Installing Stacer'
-sudo add-apt-repository ppa:oguzhaninan/stacer
+sudo add-apt-repository ppa:oguzhaninan/stacer -y
 sudo apt-get update
 sudo apt-get install stacer -y
 
@@ -213,21 +198,14 @@ wget https://linux.dropbox.com/packages/ubuntu/dropbox_1.6.0_amd64.deb
 sudo dpkg -i dropbox_1.6.0_amd64.deb
 
 echo 'Installing Ulauncher'
-sudo ppa:agornostal/ulauncher
-sudo apt install ./packagename.deb -y
-
-echo 'Installing Reactotron'
-wget https://github.com/infinitered/reactotron/releases/download/v3.0.0-beta.9/reactotron-app_3.0.0-beta.9_amd64.deb -O reactotron.appimage
-chmod +x reactotron.appimage
-sudo ./reactotron.appimage
+sudo add-apt-repository ppa:agornostal/ulauncher -y
+sudo apt update -y
+sudo apt install ulauncher -y
 
 echo 'Installing Typora'
-# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BA300B7755AFCFAE
 wget -qO - https://typora.io/linux/public-key.asc | sudo apt-key add -
-# add Typora's repository
-sudo add-apt-repository 'deb https://typora.io/linux ./'
+sudo add-apt-repository 'deb https://typora.io/linux ./' -y
 sudo apt-get update
-# install typora
 sudo apt-get install typora -y
 
 echo 'Installing ZSH'
