@@ -21,11 +21,10 @@ echo 'Installing neofetch'
 sudo apt-get install neofetch -y
 
 echo 'Installing latest git' 
-sudo add-apt-repository ppa:git-core/ppa -y
-sudo apt-get update && sudo apt-get install git -y
+sudo apt-get install git -y
 
 echo 'Installing python3-pip'
-sudo apt-get install python3-pip -y
+sudo apt-get install python3-pip -ysudo apt-get update &&
 
 echo 'Installing getgist to download dot files from gist'
 sudo pip3 install getgist
@@ -61,8 +60,8 @@ ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub
 
 echo 'Installing NVM' 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
-
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+sudo apt-get update &&
 export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
@@ -79,14 +78,15 @@ echo '"--emoji" true' >> ~/.yarnrc
 
 echo 'Installing Typescript'
 yarn global add typescript
-clear
 
 echo 'Installing VSCode'
-curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
-sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
-sudo sh -c 'echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-sudo apt-get install apt-transport-https -y
-sudo apt-get update && sudo apt-get install code -y
+sudo apt-get install wget gpg
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
+sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+rm -f packages.microsoft.gpg
+sudo apt install apt-transport-https -y
+sudo apt update && sudo apt install code -y
 
 sudo apt install gnome-keyring
 
@@ -99,20 +99,16 @@ echo 'Launching Vivaldi on Github so you can paste your keys'
 vivaldi https://github.com/settings/keys </dev/null >/dev/null 2>&1 & disown
 
 echo 'Installing Docker'
-sudo apt-get purge docker docker-engine docker.io
-sudo apt-get install docker.io -y
-sudo systemctl start docker
-sudo systemctl enable docker
-docker --version
+sudo apt install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+apt-cache policy docker-ce
+sudo apt install docker-ce
 
+sudo systemctl status docker
 sudo groupadd docker
 sudo usermod -aG docker $USER
 sudo chmod 777 /var/run/docker.sock
-
-echo 'Installing docker-compose'
-sudo curl -L "https://github.com/docker/compose/releases/download/1.26.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-docker-compose --version
 
 echo 'Installing Heroku CLI'
 curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
@@ -139,6 +135,7 @@ sudo apt-get install vlc -y
 sudo apt-get install vlc-plugin-access-extra libbluray-bdj libdvdcss2 -y
 
 echo 'Installing Discord'
+sudo apt --fix-broken install -y
 wget -O discord.deb "https://discordapp.com/api/download?platform=linux&format=deb"
 sudo dpkg -i discord.deb
 sudo apt-get install -f -y && rm discord.deb
@@ -224,5 +221,13 @@ source ~/.zshrc
 
 source ~/.zshrc
 clear
+
+# TODO
+# Zsh complete config Zinit and plugins
+# EXA config
+# BAT config
+# Android studio
+# Expo CLI
+
 
 echo 'All setup, enjoy!'
