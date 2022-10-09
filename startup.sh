@@ -24,7 +24,7 @@ echo 'Installing latest git'
 sudo apt-get install git -y
 
 echo 'Installing python3-pip'
-sudo apt-get install python3-pip -ysudo apt-get update &&
+sudo apt-get install python3-pip -y; sudo apt install python-is-python3 -y; sudo apt-get update &&
 
 echo 'Installing getgist to download dot files from gist'
 sudo pip3 install getgist
@@ -88,7 +88,7 @@ rm -f packages.microsoft.gpg
 sudo apt install apt-transport-https -y
 sudo apt update && sudo apt install code -y
 
-sudo apt install gnome-keyring
+sudo apt install gnome-keyring -y
 
 echo 'Installing Vivaldi' 
 wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -
@@ -99,34 +99,20 @@ echo 'Launching Vivaldi on Github so you can paste your keys'
 vivaldi https://github.com/settings/keys </dev/null >/dev/null 2>&1 & disown
 
 echo 'Installing Docker'
-sudo apt install apt-transport-https ca-certificates curl software-properties-common
+sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable" -y
 apt-cache policy docker-ce
-sudo apt install docker-ce
+sudo apt install docker-ce -y
 
 sudo systemctl status docker
 sudo groupadd docker
 sudo usermod -aG docker $USER
 sudo chmod 777 /var/run/docker.sock
 
-echo 'Installing Heroku CLI'
-curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
-heroku --version
-
-echo 'Installing Vercel CLI'
-sudo npm i -g vercel
-vercel --version
-
-echo 'Installing Netlify CLI'
-sudo npm install -g --unsafe-perm=true netlify-cli
-netlify --version
-
 echo 'Installing Insomnia Core'
 echo "deb [trusted=yes arch=amd64] https://download.konghq.com/insomnia-ubuntu/ default all" \
     | sudo tee -a /etc/apt/sources.list.d/insomnia.list
-
-# Refresh repository sources and install Insomnia
 sudo apt-get update
 sudo apt-get install insomnia -y
 
@@ -146,11 +132,6 @@ echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sou
 sudo apt-get update
 sudo apt-get install spotify-client -y
 
-echo 'Installing Peek' 
-sudo add-apt-repository ppa:peek-developers/stable -y
-sudo apt update
-sudo apt install peek -y
-
 echo 'Installing tool to handle clipboard via CLI'
 sudo apt-get install xclip -y
 
@@ -158,9 +139,6 @@ echo 'Installing CopyQ'
 sudo add-apt-repository ppa:hluk/copyq -y
 sudo apt update
 sudo apt install copyq -y
-
-echo 'Installing Robo3t'
-sudo snap install robo3t-snap
 
 echo 'Updating and Cleaning Unnecessary Packages'
 sudo -- sh -c 'apt-get update; apt-get upgrade -y; apt-get full-upgrade -y; apt-get autoremove -y; apt-get autoclean -y'
@@ -172,18 +150,8 @@ docker run --name postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
 echo 'Installing mongodb container'
 docker run --name mongodb -p 27017:27017 -d -t mongo
 
-echo 'Installing redis container'
-docker run --name redis -p 6379:6379 -d -t redis:alpine
-clear
-
 echo 'Bumping the max file watchers'
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
-
-echo 'Installing Beekeeper Studio'
-wget --quiet -O - https://deb.beekeeperstudio.io/beekeeper.key | sudo apt-key add -
-echo "deb https://deb.beekeeperstudio.io stable main" | sudo tee /etc/apt/sources.list.d/beekeeper-studio-app.list
-sudo apt update
-sudo apt install beekeeper-studio -y
 
 echo 'Installing Stacer'
 sudo add-apt-repository ppa:oguzhaninan/stacer -y
@@ -191,19 +159,13 @@ sudo apt-get update
 sudo apt-get install stacer -y
 
 echo 'Installing Dropbox Client'
-wget https://linux.dropbox.com/packages/ubuntu/dropbox_1.6.0_amd64.deb
-sudo dpkg -i dropbox_1.6.0_amd64.deb
-
-echo 'Installing Ulauncher'
-sudo add-apt-repository ppa:agornostal/ulauncher -y
-sudo apt update -y
-sudo apt install ulauncher -y
-
-echo 'Installing Typora'
-wget -qO - https://typora.io/linux/public-key.asc | sudo apt-key add -
-sudo add-apt-repository 'deb https://typora.io/linux ./' -y
-sudo apt-get update
-sudo apt-get install typora -y
+sudo rm -Rf /opt/dropbox*;sudo rm -Rf /usr/bin/dropbox;sudo rm -Rf /usr/share/applications/dropbox.desktop
+wget "http://www.dropbox.com/download/?plat=lnx.x86_64" -O dropbox.tar.gz
+sudo tar -xvf dropbox.tar.gz -C /opt/
+sudo mv /opt/.dropbox-dist/ /opt/dropbox
+sudo ln -sf /opt/dropbox/dropboxd /usr/bin/dropbox
+echo -e '[Desktop Entry]\n Version=1.0\n Name=Dropbox\n Exec=/opt/dropbox/dropboxd\n Icon=dropbox\n Type=Application\n Categories=Application' | sudo tee /usr/share/applications/Dropbox.desktop
+sudo chmod +x /usr/share/applications/Dropbox.desktop
 
 echo 'Installing ZSH'
 sudo apt-get install zsh -y
@@ -219,15 +181,16 @@ git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/theme
 ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
 source ~/.zshrc
 
-source ~/.zshrc
+echo 'Installing ZSH plugins'
+bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
+
+echo 'Installing EXA'
+sudo apt install exa -y
+
+echo 'Installing bat'
+sudo apt install exa -y
+mkdir -p ~/.local/bin
+ln -s /usr/bin/batcat ~/.local/bin/bat
+
 clear
-
-# TODO
-# Zsh complete config Zinit and plugins
-# EXA config
-# BAT config
-# Android studio
-# Expo CLI
-
-
 echo 'All setup, enjoy!'
