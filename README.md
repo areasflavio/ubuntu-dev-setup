@@ -1,6 +1,6 @@
 # Linux Workstation Setup
 
-This configs were made based on [Luke Morales's setup](https://github.com/lukemorales/ubuntu-dev-setup)
+This configs were made based on day to day dev use.
 
 ## Getting Started
 
@@ -26,24 +26,19 @@ sh startup.sh
 - [VSCode](https://code.visualstudio.com/) - Source-code editor made by Microsoft
 - [Vivaldi](https://vivaldi.com/) - The new Vivaldi browser protects you from trackers, blocks unwanted ads, and puts you in control with unique built-in features
 - [Docker](https://www.docker.com/) - Platform for building, deploying, and managing containerized applications
-- [Docker Compose](https://docs.docker.com/compose/) - Tool for defining and running multi-container Docker applications
-- [Heroku CLI](https://devcenter.heroku.com/categories/command-line) - Create and manage your Heroku apps
-- [Vercel CLI](https://vercel.com/cli) - Vercel command-line interface enables instant cloud deployment and local development
-- [Netlify CLI](https://cli.netlify.com) - Netlify’s command line interface (CLI) lets you configure continuous deployment straight from the command line.
 - [Insomnia Core](https://insomnia.rest/) - The Desktop API client for REST and GraphQL. Make requests, inspect responses
 - [VLC](https://www.videolan.org/vlc/) - Media player
-- [Discord](https://discord.com/new) - Chat for Communities and Friends
+- [Discord](https://discord.com/) - Chat for Communities and Friends
 - [Spotify](https://www.spotify.com/) - Music streaming and media services provider
-- [Peek](https://github.com/phw/peek) - Simple animated GIF screen recorder with an easy to use interface
 - [Xclip](https://opensource.com/article/19/7/xclip) - Command line interface to the X11 clipboard
 - [CopyQ](https://hluk.github.io/CopyQ/) - CopyQ is advanced clipboard manager with editing and scripting features
-- [Robo3t](https://robomongo.org/) - MongoDB GUI
-- [Beekeeper Studio](https://www.beekeeperstudio.io) - The smoothest, best looking, and easiest to use SQL client for MySQL, Postgres, SQLite, SQL Server, and more
 - [Stacer](https://oguzhaninan.github.io/Stacer-Web/) - Linux System Optimizer & Monitoring
 - [Dropbox Client](https://www.dropbox.com/install-linux) - Everything you need for work, all in one place
-- [Ulauncher](https://ulauncher.io) - Application launcher for Linux
-- [Reactotron](https://infinite.red/reactotron) - Inspect React and React Native Apps With Ease
-- [Typora](https://typora.io/) - Typora gives you a seamless experience as both a reader and a writer
+- [exa](https://the.exa.website) - A modern replacement for ls.
+- [fd](https://github.com/sharkdp/fd) - A simple, fast and user-friendly alternative to 'find'.
+- [fzf](https://github.com/junegunn/fzf) - A command-line fuzzy finder.
+- [bat](https://github.com/sharkdp/bat) - A cat(1) clone with wings.
+- [tldr pages](https://tldr.sh) - Simplified and community-driven man pages.
 
 ---
 

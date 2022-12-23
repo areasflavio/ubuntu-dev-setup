@@ -187,10 +187,25 @@ bash -c "$(curl --fail --show-error --silent --location https://raw.githubuserco
 echo 'Installing EXA'
 sudo apt install exa -y
 
+echo 'Installing RipGrep'
+sudo apt install ripgrep -y
+
+echo 'Installing FdFind'
+sudo apt install fd-find -y
+
+echo 'Installing FuzzyFind'
+sudo apt install fzf -y
+
+echo 'Installing macOS ‘Quick Look’ on Ubuntu with GNOME Sushi'
+sudo apt install gnome-sushi -y
+
 echo 'Installing bat'
 sudo apt install exa -y
 mkdir -p ~/.local/bin
 ln -s /usr/bin/batcat ~/.local/bin/bat
+
+echo 'Installing tldr'
+npm install -g tldr
 
 clear
 echo 'All setup, enjoy!'
