@@ -59,16 +59,16 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub
 
-echo 'Installing NVM' 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-sudo apt-get update &&
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+echo 'Installing asdf' 
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
+echo ". $HOME/.asdf/asdf.sh" >> ~/.zshrc
+echo "# append completions to fpath\nfpath=(${ASDF_DIR}/completions $fpath)\n# initialise completions with ZSH's compinit\nautoload -Uz compinit && compinit" >> ~/.zshrc
 
 echo 'Installing NodeJS LTS'
-nvm --version
-nvm install --lts
-nvm current
+asdf add plugin nodejs
+asdf install nodejs lts
+asdf global nodejs lts
+node --version
 
 echo 'Installing Yarn'
 curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -200,7 +200,7 @@ echo 'Installing macOS ‘Quick Look’ on Ubuntu with GNOME Sushi'
 sudo apt install gnome-sushi -y
 
 echo 'Installing bat'
-sudo apt install exa -y
+sudo apt install bat -y
 mkdir -p ~/.local/bin
 ln -s /usr/bin/batcat ~/.local/bin/bat
 
