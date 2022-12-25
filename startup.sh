@@ -59,26 +59,6 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub
 
-echo 'Installing asdf' 
-git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
-echo ". $HOME/.asdf/asdf.sh" >> ~/.zshrc
-echo "# append completions to fpath\nfpath=(${ASDF_DIR}/completions $fpath)\n# initialise completions with ZSH's compinit\nautoload -Uz compinit && compinit" >> ~/.zshrc
-
-echo 'Installing NodeJS LTS'
-asdf add plugin nodejs
-asdf install nodejs lts
-asdf global nodejs lts
-node --version
-
-echo 'Installing Yarn'
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update && sudo apt-get install --no-install-recommends yarn
-echo '"--emoji" true' >> ~/.yarnrc
-
-echo 'Installing Typescript'
-yarn global add typescript
-
 echo 'Installing VSCode'
 sudo apt-get install wget gpg
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
@@ -183,6 +163,26 @@ source ~/.zshrc
 
 echo 'Installing ZSH plugins'
 bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
+
+echo 'Installing asdf' 
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.10.2
+echo ". $HOME/.asdf/asdf.sh" >> ~/.zshrc
+echo "# append completions to fpath\nfpath=(${ASDF_DIR}/completions $fpath)\n# initialise completions with ZSH's compinit\nautoload -Uz compinit && compinit" >> ~/.zshrc
+
+echo 'Installing NodeJS LTS'
+asdf add plugin nodejs
+asdf install nodejs lts
+asdf global nodejs lts
+node --version
+
+echo 'Installing Yarn'
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+sudo apt-get update && sudo apt-get install --no-install-recommends yarn
+echo '"--emoji" true' >> ~/.yarnrc
+
+echo 'Installing Typescript'
+yarn global add typescript
 
 echo 'Installing EXA'
 sudo apt install exa -y
