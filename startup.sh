@@ -206,7 +206,7 @@ echo 'Installing macOS ‘Quick Look’ on Ubuntu with GNOME Sushi'
 sudo apt install gnome-sushi -y
 
 echo 'Installing bat'
-sudo apt install exa -y
+sudo apt install bat -y
 mkdir -p ~/.local/bin
 ln -s /usr/bin/batcat ~/.local/bin/bat
 
