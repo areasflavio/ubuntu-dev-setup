@@ -20,15 +20,11 @@ sudo apt-get install curl -y
 echo 'Installing neofetch' 
 sudo apt-get install neofetch -y
 
+echo 'Installing tool to handle clipboard via CLI'
+sudo apt-get install xclip -y
+
 echo 'Installing latest git' 
 sudo apt-get install git -y
-
-echo 'Installing python3-pip'
-sudo apt-get install python3-pip -y; sudo apt install python-is-python3 -y; sudo apt-get update &&
-
-echo 'Installing getgist to download dot files from gist'
-sudo pip3 install getgist
-export GETGIST_USER=$username
 
 if [$XDG_CURRENT_DESKTOP == 'KDE'] ; then
     echo 'Cloning your Konsole configs from gist'
@@ -46,12 +42,10 @@ if [$XDG_CURRENT_DESKTOP == 'KDE'] ; then
     sudo apt-get update && sudo apt install qt5-style-kvantum -y
 fi
 
-echo "Setting up your git global user name and email"
+echo "Setting up your git config"
 git config --global user.name "$git_config_user_name"
-git config --global user.email $git_config_user_email
-
-echo 'Cloning your .gitconfig from gist'
-getmy .gitconfig
+git config --global user.email "$git_config_user_email"
+git config --global init.defaultBranch main
 
 echo 'Generating a SSH Key'
 ssh-keygen -t rsa -b 4096 -C $git_config_user_email
@@ -59,25 +53,53 @@ eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 cat ~/.ssh/id_rsa.pub
 
-echo 'Installing NVM' 
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-sudo apt-get update &&
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+echo 'Installing ZSH'
+sudo apt-get install zsh -y
+sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
+chsh -s $(which zsh)
+
+echo 'Indexing snap to ZSH'
+sudo chmod 777 /etc/zsh/zprofile
+echo "emulate sh -c 'source /etc/profile.d/apps-bin-path.sh'" >> /etc/zsh/zprofile
+
+echo 'Installing Spaceship ZSH Theme'
+git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt"
+ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
+source ~/.zshrc
+
+echo 'Installing ZSH plugins'
+bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
+
+echo 'Installing asdf' 
+git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.12.0
+echo . "$HOME/.asdf/asdf.sh" 
+echo 'fpath=(${ASDF_DIR}/completions $fpath)' >> ~/.zshrc
+echo 'autoload -Uz compinit && compinit' >> ~/.zshrc
 
 echo 'Installing NodeJS LTS'
-nvm --version
-nvm install --lts
-nvm current
+asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+asdf install nodejs latest
+asdf global nodejs latest
+
+echo 'Installing Java'
+asdf plugin-add java https://github.com/halcyon/asdf-java.git
+asdf install java openjdk11
+asdf global java openjdk11
+
+echo 'Installing Python'
+asdf plugin-add python
+asdf install python latest
+asdf global python latest
+
+echo 'Installing Angular'
+asdf plugin add angular https://github.com/ronangaillard/asdf-angular.git
+asdf install angular latest
+asdf global angular latest
 
 echo 'Installing Yarn'
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-sudo apt-get update && sudo apt-get install --no-install-recommends yarn
+asdf plugin-add yarn
+asdf install yarn latest
 echo '"--emoji" true' >> ~/.yarnrc
-
-echo 'Installing Typescript'
-yarn global add typescript
 
 echo 'Installing VSCode'
 sudo apt-get install wget gpg
@@ -110,11 +132,23 @@ sudo groupadd docker
 sudo usermod -aG docker $USER
 sudo chmod 777 /var/run/docker.sock
 
-echo 'Installing Insomnia Core'
-echo "deb [trusted=yes arch=amd64] https://download.konghq.com/insomnia-ubuntu/ default all" \
-    | sudo tee -a /etc/apt/sources.list.d/insomnia.list
-sudo apt-get update
-sudo apt-get install insomnia -y
+echo 'Installing postgres container'
+docker run --name postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
+
+echo 'Installing mongodb container'
+docker run --name mongodb -p 27017:27017 -d -t mongo
+
+echo 'Bumping the max file watchers'
+echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
+
+echo 'Installing Snap'
+sudo apt install snapd -y
+
+echo 'Installing Postman'
+sudo snap install postman -y
+
+echo 'Installing DBeaver'
+sudo snap install dbeaver-ce -y
 
 echo 'Installing VLC'
 sudo apt-get install vlc -y
@@ -132,26 +166,10 @@ echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sou
 sudo apt-get update
 sudo apt-get install spotify-client -y
 
-echo 'Installing tool to handle clipboard via CLI'
-sudo apt-get install xclip -y
-
 echo 'Installing CopyQ' 
 sudo add-apt-repository ppa:hluk/copyq -y
 sudo apt update
 sudo apt install copyq -y
-
-echo 'Updating and Cleaning Unnecessary Packages'
-sudo -- sh -c 'apt-get update; apt-get upgrade -y; apt-get full-upgrade -y; apt-get autoremove -y; apt-get autoclean -y'
-clear
-
-echo 'Installing postgres container'
-docker run --name postgres -e POSTGRES_PASSWORD=docker -p 5432:5432 -d postgres
-
-echo 'Installing mongodb container'
-docker run --name mongodb -p 27017:27017 -d -t mongo
-
-echo 'Bumping the max file watchers'
-echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 
 echo 'Installing Stacer'
 sudo add-apt-repository ppa:oguzhaninan/stacer -y
@@ -167,22 +185,10 @@ sudo ln -sf /opt/dropbox/dropboxd /usr/bin/dropbox
 echo -e '[Desktop Entry]\n Version=1.0\n Name=Dropbox\n Exec=/opt/dropbox/dropboxd\n Icon=dropbox\n Type=Application\n Categories=Application' | sudo tee /usr/share/applications/Dropbox.desktop
 sudo chmod +x /usr/share/applications/Dropbox.desktop
 
-echo 'Installing ZSH'
-sudo apt-get install zsh -y
-sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
-chsh -s $(which zsh)
-
-echo 'Indexing snap to ZSH'
-sudo chmod 777 /etc/zsh/zprofile
-echo "emulate sh -c 'source /etc/profile.d/apps-bin-path.sh'" >> /etc/zsh/zprofile
-
-echo 'Installing Spaceship ZSH Theme'
-git clone https://github.com/denysdovhan/spaceship-prompt.git "$ZSH_CUSTOM/themes/spaceship-prompt"
-ln -s "$ZSH_CUSTOM/themes/spaceship-prompt/spaceship.zsh-theme" "$ZSH_CUSTOM/themes/spaceship.zsh-theme"
-source ~/.zshrc
-
-echo 'Installing ZSH plugins'
-bash -c "$(curl --fail --show-error --silent --location https://raw.githubusercontent.com/zdharma-continuum/zinit/HEAD/scripts/install.sh)"
+echo 'Installing KeepassXC'
+sudo add-apt-repository ppa:phoerious/keepassxc
+sudo apt update
+sudo apt install keepassxc
 
 echo 'Installing EXA'
 sudo apt install exa -y
@@ -205,7 +211,10 @@ mkdir -p ~/.local/bin
 ln -s /usr/bin/batcat ~/.local/bin/bat
 
 echo 'Installing tldr'
-npm install -g tldr
+npm install --global tldr
+
+echo 'Updating and Cleaning Unnecessary Packages'
+sudo -- sh -c 'apt-get update; apt-get upgrade -y; apt-get full-upgrade -y; apt-get autoremove -y; apt-get autoclean -y'
 
 clear
 echo 'All setup, enjoy!'
