@@ -161,7 +161,8 @@ sudo dpkg -i discord.deb
 sudo apt-get install -f -y && rm discord.deb
 
 echo 'Installing Spotify' 
-curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add - 
+sudo apt install dirmngr -y
+curl -sS https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
 echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 sudo apt-get update
 sudo apt-get install spotify-client -y
@@ -188,7 +189,7 @@ sudo chmod +x /usr/share/applications/Dropbox.desktop
 echo 'Installing KeepassXC'
 sudo add-apt-repository ppa:phoerious/keepassxc
 sudo apt update
-sudo apt install keepassxc
+sudo apt install keepassxc -y
 
 echo 'Installing EXA'
 sudo apt install exa -y
